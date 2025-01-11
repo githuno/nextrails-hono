@@ -1,0 +1,75 @@
+{
+	"name": "Node.js & TypeScript",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bullseye",
+	// "dockerComposeFile": "compose.yml",
+  // "service": "app",
+  // "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"runArgs": [
+	  "--env-file",
+	  "${localWorkspaceFolder}/.devcontainer/.env",
+		"--device=/dev/net/tun",
+	  "--add-host=host.docker.internal:host-gateway",
+	  "--mount", "type=bind,source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,consistency=cached",
+	  "-p", "127.0.0.1:3330:3000", // フロントエンド	  
+		"-p", "127.0.0.1:3331:8787" // バックエンド
+	],
+	"features": {
+		"ghcr.io/tailscale/codespace/tailscale": {},
+	  "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+	  "ghcr.io/devcontainers/features/python:1": { "version": "3.9" },
+		"ghcr.io/devcontainers/features/github-cli:1": { "version": "latest"},
+		//   "ghcr.io/dhoeric/features/google-cloud-cli:1": {},
+		//   "ghcr.io/devcontainers-extra/features/firebase-cli:2": {
+		// 	"version": "9.23.0"
+		//   },
+		//   "ghcr.io/devcontainers/features/aws-cli:1": {},
+		//   "ghcr.io/devcontainers-extra/features/circleci-cli:1": {},
+	},
+	// "postCreateCommand": "pip install awscli-local",
+  
+	// // nvm install(Dockerfileを使わない場合＝python2が不要な場合)
+	"postCreateCommand": "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash && . $NVM_DIR/nvm.sh && nvm install 22 && nvm alias default 22 && nvm use 22 && npm install",
+  
+	// "postAttachCommand": "npm run dev",
+	"customizations": {
+		"vscode": {
+		  "extensions": [
+			"octref.vetur",
+			"dbaeumer.vscode-eslint",
+			"esbenp.prettier-vscode",
+			"mhutchie.git-graph",
+			"ziyasal.vscode-open-in-github",
+			"GitHub.copilot",
+			"GitHub.copilot-chat",
+			"Vue.volar",
+			"sysoev.vscode-open-in-github",
+			"waderyan.gitblame",
+			"formulahendry.auto-complete-tag",
+			"christian-kohler.npm-intellisense",
+			"christian-kohler.path-intellisense",
+			"bradlc.vscode-tailwindcss"
+		  ],
+		  "settings": {
+			"editor.formatOnSave": true,
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+			"editor.codeActionsOnSave": {
+			  "source.fixAll.eslint": "always"
+			},
+			"prettier.eslintIntegration": true,
+			"[javascript]": {
+			  "editor.defaultFormatter": "esbenp.prettier-vscode"
+			},
+			"[typescript]": {
+			  "editor.defaultFormatter": "esbenp.prettier-vscode"
+			},
+			"[json]": {
+			  "editor.defaultFormatter": "esbenp.prettier-vscode"
+			},
+			"[css]": {
+			  "editor.defaultFormatter": "esbenp.prettier-vscode"
+			}
+		  }
+		}
+	  }
+  }
+  
