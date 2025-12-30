@@ -42,7 +42,8 @@ else
 fi
 
 # /etc/profile.d に登録（新しいシェル起動時に自動読み込みする/etc/profile.d/devenv-global.shを作成）
-# ※ アタッチ時に毎回再生成することで、.env.config の変更を即座に反映
+# ※ アタッチ時に毎回再生成することで、.env.config の変更（環境変数やnpmラッパー関数）を即座に反映
+# ※ Docker Volumeにnode_modules実体がある場合にも開発ルートで自然にnpmコマンドを使えるようにするラッパー関数も定義
 WORKSPACE_NAME="$(basename "$WORKSPACE_ROOT")"
 sudo tee /etc/profile.d/devenv-global.sh > /dev/null <<ENVEOF
 #!/bin/bash
