@@ -1,0 +1,13 @@
+[tools]
+node = "24"
+uv = "latest"
+python = "3.12"
+gh = "latest"
+awscli = "latest"
+gcloud = "latest"
+"npm:firebase-tools" = "latest"
+
+[settings]
+auto_install = true # 不足しているツールを自動的にインストールする
+asdf_compat = true # asdfの動作と一貫した振る舞いを保証
+experimental = true # 実験的機能の有効化

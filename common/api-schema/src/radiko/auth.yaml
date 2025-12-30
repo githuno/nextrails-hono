@@ -1,0 +1,29 @@
+post:
+  summary: ラジコ認証
+  description: ラジコの認証を行います
+  operationId: auth
+  parameters:
+    - name: ip
+      in: query
+      required: false
+      schema:
+        type: string
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - token
+              - areaId
+            properties:
+              token:
+                type: string
+              areaId:
+                type: string
+              success:
+                type: boolean
+              timestamp:
+                type: number

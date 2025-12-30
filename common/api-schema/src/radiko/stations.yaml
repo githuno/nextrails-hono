@@ -1,0 +1,36 @@
+get:
+  summary: 放送局一覧
+  description: 指定エリアの放送局一覧を取得します
+  operationId: getStations
+  parameters:
+    - name: area
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - name
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    url:
+                      type: string
+                    banner:
+                      type: string

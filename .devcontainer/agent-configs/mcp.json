@@ -1,0 +1,200 @@
+{
+  "servers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "chrome-devtools-mcp@latest",
+        "--browserUrl=http://localhost:9222"
+      ]
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
+    },
+    // ローカルマシンで以下のコマンドを実行してChromeをリモートデバッグモードで起動してください：
+    // # macOS/Linux
+    // google-chrome --remote-debugging-port=9222
+    // # Windows
+    // chrome.exe --remote-debugging-port=9222
+    // SSH接続時にポートフォワーディングを設定してください：
+    // ssh -L 9222:localhost: 9222 user@remote-server
+    // または、VS CodeのSSH拡張機能で接続している場合は、VS Codeのコマンドパレット（Ctrl+Shift+P）から「Remote-SSH: Open SSH Configuration File」を選択し、設定ファイルに以下を追加：
+    // LocalForward 9222 localhost: 9222
+    // リモート環境のVS CodeでGitHub Copilot Chatを開き、以下のように質問してください：
+    // `List all open tabs in Chrome`
+    "markitdown": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "markitdown-mcp"
+      ],
+      "gallery": true,
+      "version": "0.0.1"
+    },
+    "sequentialthinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking@latest"
+      ],
+      "gallery": true,
+      "version": "0.0.1"
+    },
+    "memory": {
+    	"type": "stdio",
+    	"command": "npx",
+    	"args": [
+    		"-y",
+    		"@modelcontextprotocol/server-memory@latest"
+    	],
+    	"env": {
+    		"MEMORY_FILE_PATH": "$${input:memory_file_path}"
+    	},
+    	"gallery": true,
+    	"version": "0.0.1"
+    },
+    // "oraios/serena": {
+    //   "type": "stdio",
+    //   "command": "uvx",
+    //   "args": [
+    //     "--from",
+    //     "git+https://github.com/oraios/serena",
+    //     "serena",
+    //     "start-mcp-server",
+    //     "serena==latest",
+    //     "--context",
+    //     "ide-assistant"
+    //   ],
+    //   "gallery": "https://api.mcp.github.com/v0/servers/0658e342-7ae7-493a-b378-a324363ee322",
+    //   "version": "1.0.0"
+    // },
+    "upstash/context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "undefined": "{context7_api_key}"
+      },
+      "gallery": "https://api.mcp.github.com/v0/servers/dcec7705-b81b-4e0f-8615-8032604be7ad",
+      "version": "1.0.0"
+    },
+    "aws-knowledge-mcp-server": {
+    	"url": "https://knowledge-mcp.global.api.aws"
+    },
+    "awslabs.core-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.core-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "awslabs.aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "awslabs.aws-iac-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-iac-mcp-server@latest"
+      ],
+      "env": {
+        // "AWS_PROFILE": "your-named-profile",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "awslabs.cdk-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.cdk-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "awslabs.terraform-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.terraform-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "awslabs.aws-diagram-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-diagram-mcp-server"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    // "playwright": {
+    //   "type": "stdio",
+    //   "command": "npx",
+    //   "args": [
+    //     "@playwright/mcp@latest"
+    //   ],
+    //   "gallery": true
+    // },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      // "headers": {
+      //   "X-MCP-Tools":
+      // },
+      "gallery": true
+    },
+    "deepwiki": {
+      "type": "http",
+      "url": "https://mcp.deepwiki.com/sse",
+      "gallery": true
+    },
+    "terraform": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "hashicorp/terraform-mcp-server:latest"
+      ],
+      "gallery": true
+    },
+    "prisma-postgres": {
+      "type": "http",
+      "url": "https://mcp.prisma.io/mcp",
+      "gallery": true
+    }
+  },
+  "inputs": [
+    {
+      "id": "memory_file_path",
+      "type": "promptString",
+      "description": "Path to the memory storage file",
+      "password": false
+    }
+  ]
+}

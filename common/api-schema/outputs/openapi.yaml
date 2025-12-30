@@ -1,0 +1,74 @@
+openapi: 3.1.0
+info:
+  version: 0.1.0
+  title: API Schema
+  description: API Schema for all services
+paths:
+  /radiko/auth:
+    post:
+      summary: ラジコ認証
+      description: ラジコの認証を行います
+      operationId: auth
+      parameters:
+        - name: ip
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - token
+                  - areaId
+                properties:
+                  token:
+                    type: string
+                  areaId:
+                    type: string
+                  success:
+                    type: boolean
+                  timestamp:
+                    type: number
+  /radiko/stations/{area}:
+    get:
+      summary: 放送局一覧
+      description: 指定エリアの放送局一覧を取得します
+      operationId: getStations
+      parameters:
+        - name: area
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - id
+                        - name
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        banner:
+                          type: string
+components: {}

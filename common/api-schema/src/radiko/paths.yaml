@@ -1,0 +1,5 @@
+/radiko/auth:
+  $ref: './auth.yaml'
+
+/radiko/stations/{area}:
+  $ref: './stations.yaml'

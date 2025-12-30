@@ -1,0 +1,13 @@
+openapi: 3.1.0
+
+info:
+  version: 0.1.0
+  title: API Schema
+  description: API Schema for all services
+
+paths:
+  # Radiko API paths
+  $ref: './radiko/paths.yaml'
+  # Other service paths can be added here
+  # /other-service/...:
+  #   $ref: './paths/other-service/...'
