@@ -41,18 +41,91 @@ else
   exit 1
 fi
 
-# /etc/profile.d に登録（新しいシェル起動時に自動読み込み）
+# /etc/profile.d に登録（新しいシェル起動時に自動読み込みする/etc/profile.d/devenv-global.shを作成）
 # ※ アタッチ時に毎回再生成することで、.env.config の変更を即座に反映
 WORKSPACE_NAME="$(basename "$WORKSPACE_ROOT")"
 sudo tee /etc/profile.d/devenv-global.sh > /dev/null <<ENVEOF
 #!/bin/bash
 # .devcontainer/.env.config のアプリケーション環境変数を全シェルで動的読み込み
 # 毎回のアタッチで再生成されるため、変更が即座に反映される
+WORKSPACE_ROOT="/workspaces/$WORKSPACE_NAME"
+STORAGE_ROOT="\$WORKSPACE_ROOT/.storage"
+
 if [ -f "/workspaces/$WORKSPACE_NAME/.devcontainer/.env.config" ]; then
   set -a
   source "/workspaces/$WORKSPACE_NAME/.devcontainer/.env.config"
   set +a
 fi
+
+# npm ラッパー関数: VOLUME_TARGETS の対象ディレクトリでの npm install 等を自動的にストレージ側にリダイレクトする
+npm() {
+  local cmd="\$1"
+  local current_dir="\$PWD"
+  
+  # WORKSPACE_ROOT 内にいるかチェック
+  if [[ "\$current_dir" != "\$WORKSPACE_ROOT"* ]]; then
+    command npm "\$@"
+    return \$?
+  fi
+
+  local rel_path="\${current_dir#\$WORKSPACE_ROOT/}"
+  rel_path="\${rel_path#/}"
+  
+  # VOLUME_TARGETS に含まれるディレクトリかチェック
+  local is_target=false
+  local target_path=""
+  if [[ -n "\$VOLUME_TARGETS" ]]; then
+    while IFS= read -r target; do
+      target=\$(echo "\$target" | xargs)
+      [ -z "\$target" ] && continue
+      
+      local base_target="\${target%/node_modules}"
+      
+      if [[ "\$rel_path" == "\$base_target" ]] || [[ "\$rel_path" == "\$base_target/"* ]]; then
+        is_target=true
+        target_path="\$WORKSPACE_ROOT/\$base_target"
+        break
+      fi
+    done <<< "\$VOLUME_TARGETS"
+  fi
+
+  # node_modules を変更するコマンドかつ対象ディレクトリの場合
+  if [[ "\$is_target" == true ]] && [[ " install i add uninstall remove rm update upgrade " =~ " \$cmd " ]]; then
+    local rel_target_path="\${target_path#\$WORKSPACE_ROOT/}"
+    local storage_name="\${rel_target_path//\//_}_node_modules"
+    local storage_path="\$STORAGE_ROOT/\$storage_name"
+    
+    echo "📦 [Volume Sync] Redirecting npm \$cmd to \$storage_path"
+    
+    # 1. package.json をストレージに同期
+    if [[ "\$PWD" == "\$target_path" ]]; then
+      cp package.json "\$storage_path/" 2>/dev/null || true
+      [ -f package-lock.json ] && cp package-lock.json "\$storage_path/" 2>/dev/null || true
+    fi
+    
+    # 2. ストレージ側で実行
+    (cd "\$storage_path" && command npm "\$@")
+    local exit_code=\$?
+    
+    # 3. 結果をプロジェクト側に書き戻す
+    if [[ "\$PWD" == "\$target_path" ]]; then
+      cp "\$storage_path/package.json" . 2>/dev/null || true
+      cp "\$storage_path/package-lock.json" . 2>/dev/null || true
+      
+      # 4. シンボリックリンクの復元
+      if [ ! -L node_modules ]; then
+        echo "🔗 [Volume Sync] Restoring symbolic link for node_modules"
+        rm -rf node_modules
+        ln -s "../.storage/\$storage_name/node_modules" node_modules
+      fi
+    fi
+    
+    echo "✨ [Volume Sync] Done"
+    return \$exit_code
+  else
+    command npm "\$@"
+  fi
+}
 ENVEOF
 sudo chmod 644 /etc/profile.d/devenv-global.sh
 

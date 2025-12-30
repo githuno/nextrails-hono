@@ -1,0 +1,44 @@
+# Worktree Plus Configuration
+version: "1.0"
+
+# Default settings for worktrees
+defaults:
+  base_dir: ".wtp"
+
+# Hooks that run after creating a worktree
+hooks:
+  post_create:
+    - type: command
+      command: |
+        PROJECT_ROOT="PROJECT_ROOT_PLACEHOLDER"
+        REPO_ROOT="REPO_ROOT_PLACEHOLDER"
+
+        # ★envファイル群をプロジェクトルートからコピー
+        for f in "$PROJECT_ROOT"/.env*; do
+          [ -e "$f" ] && cp "$f" .
+        done
+
+        # ★AGENTS.mdをリポジトリルートからコピー
+        [ -f "$REPO_ROOT/AGENTS.md" ] && cp "$REPO_ROOT/AGENTS.md" .
+
+        # ★プロジェクトルートからnode_modulesへのシンボリックリンクを作成
+        if [ -d "$PROJECT_ROOT/node_modules" ]; then
+          ln -sfn "$PROJECT_ROOT/node_modules" ./node_modules
+        fi
+
+        wtp list
+
+# 使用方法:
+# `wtp add -b feature/new` で新しいブランチをベースにワークツリーを作成
+# `wtp cd feature/new` でそのワークツリーに移動、`wtp cd @` でメインディレクトリに戻る
+# `wtp remove --with-branch feature/new` でワークツリーとブランチを削除
+
+# 拡張機能
+# https://marketplace.visualstudio.com/items?itemName=jackiotyu.git-worktree-manager
+
+# 初期化
+# `cd <target_directory> && wtp init`
+
+# .gitignoreに以下を追加
+# .wtp/
+# .wtp*
