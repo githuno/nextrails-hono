@@ -6,6 +6,7 @@ gh = "latest"
 awscli = "latest"
 gcloud = "latest"
 "npm:firebase-tools" = "latest"
+"npm:@google/gemini-cli" = "latest"
 
 [settings]
 auto_install = true # 不足しているツールを自動的にインストールする
